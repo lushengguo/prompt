@@ -1,0 +1,116 @@
+class VariableType:
+    type_ = ""
+
+    def is_pod(self):
+        pass
+
+    def is_template(self):
+        # only if the type looks like outer_type<inner_type>
+        # it was considered as a template
+        # eg: std::string is not a template
+        pass
+
+    def template_type(self):
+        # return inner_type described in is_template
+        pass
+
+
+class StructDescription:
+    # variable_name : VariableType
+    variables = {}
+
+
+class GlobalStructs:
+    # struct_name : StructDescription
+    structs = {}
+
+
+def retrieve_structs_from_cpp_header(cpp_header):
+    """
+    This function would parse the C++ header file and populate the GlobalStructs
+    with the structs and their variable types.
+    """
+    # Implementation of parsing logic goes here
+    pass
+
+cpp_header = """
+// This is a comment at the beginning of the file.
+
+#include <vector>
+#include <string>
+#include <array>
+
+namespace MyNamespace {
+
+enum class Color {
+    RED,
+    GREEN,
+    BLUE
+};
+
+using StringAlias = std::string;
+
+struct InnerStruct {
+    int inner_value;
+    StringAlias inner_name;
+};
+
+struct SampleStruct {
+    int id;             // A simple integer
+    float value;        /* Another comment */
+    bool flag;
+    Color color;
+    InnerStruct inner_data; // Using the separately defined InnerStruct
+    std::vector<int> data_points;
+    std::array<float, 3> coordinates;
+    StringAlias name;
+    unsigned long long counter;
+    const char* message;
+    ExternalType from_other_header; // Type potentially from another header
+};
+
+struct EmptyStruct {};
+
+struct NestedContainerStruct {
+    struct ContainedStruct { // Nested named struct
+        int x;
+        int y;
+    };
+    ContainedStruct item;
+    std::vector<ContainedStruct> items;
+};
+
+} // namespace MyNamespace
+
+struct AnotherStruct {
+    double pi = 3.14159;
+};
+
+#define SOME_CONSTANT 100
+
+// Another comment at the end.
+"""
+
+
+if __name__ == "__main__":
+    global_structs = retrieve_structs_from_cpp_header(cpp_header)
+
+"""
+Generate a Python script that parses user-defined structs from a C++ header.
+
+Requirements:
+
+Ignore all nested struct/class definitions (i.e., only top-level struct fields should be parsed).
+
+Ignore default initializers in variable declarations.
+
+Ignore functions, macros, typedefs, enums, and any non-struct blocks.
+
+Ignore struct fields declared inside inner/nested structs.
+
+Extract variable name and its full type correctly even if it includes templates or qualifiers like const, unsigned long, etc.
+
+Return a JSON object like { struct_name: { field_name: field_type, ... }, ... } and a human-readable printout.
+
+The parser must be robust to irregular formatting, comments, and newlines.
+"""
